@@ -1,0 +1,22 @@
+node_modules/
+.expo/
+dist/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# macOS
+.DS_Store
+
+# Env
+.env
+.env.local
+.env.production
+
+# Firebase
+functions/node_modules/
+functions/lib/
