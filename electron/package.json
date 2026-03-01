@@ -1,0 +1,40 @@
+{
+  "name": "cleppy-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cleppy Desktop - macOS Menu Bar Clipboard Assistant",
+  "main": "../dist-electron/main.js",
+  "scripts": {
+    "build:electron": "tsc -p tsconfig.json",
+    "start:electron": "npm run build:electron && electron ../dist-electron/main.js",
+    "dev": "NODE_ENV=development npm run start:electron",
+    "dist": "npm run build:electron && electron-builder",
+    "dist:mac": "npm run build:electron && electron-builder --mac"
+  },
+  "build": {
+    "appId": "com.cleppy.desktop",
+    "productName": "Cleppy",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "icon": "assets/icon.icns",
+      "target": ["dmg", "zip"],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false
+    },
+    "files": [
+      "dist-electron/**/*",
+      "web-build/**/*"
+    ],
+    "extraMetadata": {
+      "main": "dist-electron/main.js"
+    }
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.0",
+    "typescript": "~5.6.0"
+  }
+}
