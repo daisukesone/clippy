@@ -11,6 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { useCleppy } from '../context/CleppyContext';
+import { useTheme } from '../context/ThemeContext';
 import { chatWithCleppy } from '../services/claudeService';
 import { ChatMessage } from '../types';
 
@@ -21,6 +22,7 @@ interface ChatModalProps {
 
 export default function ChatModal({ visible, onClose }: ChatModalProps) {
   const { state, addChatMessage, setMood } = useCleppy();
+  const { colors } = useTheme();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const flatListRef = useRef<FlatList>(null);
@@ -75,27 +77,40 @@ export default function ChatModal({ visible, onClose }: ChatModalProps) {
     <View
       style={[
         styles.messageBubble,
-        item.role === 'user' ? styles.userMessage : styles.assistantMessage,
+        item.role === 'user'
+          ? [styles.userMessage, { backgroundColor: colors.accent }]
+          : [
+              styles.assistantMessage,
+              { backgroundColor: colors.surface, borderColor: colors.border },
+            ],
       ]}
     >
       {item.role === 'assistant' && (
-        <Text style={styles.cleppyLabel}>📎 Cleppy</Text>
+        <Text style={[styles.cleppyLabel, { color: colors.accent }]}>
+          📎 Cleppy
+        </Text>
       )}
-      <Text style={styles.messageText}>{item.content}</Text>
+      <Text style={[styles.messageText, { color: colors.text }]}>
+        {item.content}
+      </Text>
     </View>
   );
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <KeyboardAvoidingView
-        style={styles.overlay}
+        style={[styles.overlay, { backgroundColor: colors.overlay }]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>📎 Cleppy とチャット</Text>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+          <View style={[styles.header, { borderBottomColor: colors.border }]}>
+            <Text style={[styles.title, { color: colors.text }]}>
+              📎 Cleppy とチャット
+            </Text>
             <TouchableOpacity onPress={onClose}>
-              <Text style={styles.closeButton}>✕</Text>
+              <Text style={[styles.closeButton, { color: colors.textMuted }]}>
+                ✕
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -112,7 +127,7 @@ export default function ChatModal({ visible, onClose }: ChatModalProps) {
             ListEmptyComponent={
               <View style={styles.emptyState}>
                 <Text style={styles.emptyEmoji}>📎</Text>
-                <Text style={styles.emptyText}>
+                <Text style={[styles.emptyText, { color: colors.textMuted }]}>
                   こんにちは！Cleppy です。{'\n'}
                   クリップボードのことなら何でも聞いてね！
                 </Text>
@@ -120,19 +135,26 @@ export default function ChatModal({ visible, onClose }: ChatModalProps) {
             }
           />
 
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { borderTopColor: colors.border }]}>
             <TextInput
-              style={styles.input}
+              style={[
+                styles.input,
+                { backgroundColor: colors.surface, color: colors.text },
+              ]}
               value={input}
               onChangeText={setInput}
               placeholder="メッセージを入力..."
-              placeholderTextColor="#666"
+              placeholderTextColor={colors.textMuted}
               onSubmitEditing={sendMessage}
               returnKeyType="send"
               editable={!loading}
             />
             <TouchableOpacity
-              style={[styles.sendButton, loading && styles.sendButtonDisabled]}
+              style={[
+                styles.sendButton,
+                { backgroundColor: colors.accent },
+                loading && styles.sendButtonDisabled,
+              ]}
               onPress={sendMessage}
               disabled={loading}
             >
@@ -150,11 +172,9 @@ export default function ChatModal({ visible, onClose }: ChatModalProps) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'flex-end',
   },
   container: {
-    backgroundColor: '#1a1a2e',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     height: '75%',
@@ -165,15 +185,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#0f3460',
   },
   title: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
   closeButton: {
-    color: '#888',
     fontSize: 20,
     padding: 4,
   },
@@ -190,25 +207,20 @@ const styles = StyleSheet.create({
     maxWidth: '80%',
   },
   userMessage: {
-    backgroundColor: '#e94560',
     alignSelf: 'flex-end',
     borderBottomRightRadius: 4,
   },
   assistantMessage: {
-    backgroundColor: '#16213e',
     alignSelf: 'flex-start',
     borderBottomLeftRadius: 4,
     borderWidth: 1,
-    borderColor: '#0f3460',
   },
   cleppyLabel: {
-    color: '#e94560',
     fontSize: 11,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   messageText: {
-    color: '#fff',
     fontSize: 14,
     lineHeight: 20,
   },
@@ -221,7 +233,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   emptyText: {
-    color: '#888',
     fontSize: 14,
     textAlign: 'center',
     lineHeight: 22,
@@ -230,21 +241,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 12,
     borderTopWidth: 1,
-    borderTopColor: '#0f3460',
     alignItems: 'center',
   },
   input: {
     flex: 1,
-    backgroundColor: '#16213e',
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    color: '#fff',
     fontSize: 14,
     marginRight: 8,
   },
   sendButton: {
-    backgroundColor: '#e94560',
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 10,

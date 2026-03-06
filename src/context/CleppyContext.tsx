@@ -22,6 +22,7 @@ const initialState: CleppyState = {
   settings: DEFAULT_SETTINGS,
   isHistoryOverlayVisible: false,
   isAuthenticated: false,
+  apiKey: null,
 };
 
 type Action =
@@ -35,7 +36,8 @@ type Action =
   | { type: 'TOGGLE_HISTORY_OVERLAY' }
   | { type: 'SET_HISTORY_OVERLAY'; payload: boolean }
   | { type: 'SET_AUTHENTICATED'; payload: boolean }
-  | { type: 'CLEAR_HISTORY' };
+  | { type: 'CLEAR_HISTORY' }
+  | { type: 'SET_API_KEY'; payload: string | null };
 
 function cleppyReducer(state: CleppyState, action: Action): CleppyState {
   switch (action.type) {
@@ -91,6 +93,8 @@ function cleppyReducer(state: CleppyState, action: Action): CleppyState {
         ...state,
         clipboardHistory: state.clipboardHistory.filter((e) => e.pinned),
       };
+    case 'SET_API_KEY':
+      return { ...state, apiKey: action.payload };
     default:
       return state;
   }
@@ -110,6 +114,7 @@ interface CleppyContextValue {
   setHistoryOverlay: (visible: boolean) => void;
   setAuthenticated: (auth: boolean) => void;
   clearHistory: () => void;
+  setApiKey: (key: string | null) => void;
 }
 
 const CleppyContext = createContext<CleppyContextValue | undefined>(undefined);
@@ -137,6 +142,7 @@ export function CleppyProvider({ children }: { children: ReactNode }) {
     setAuthenticated: (auth) =>
       dispatch({ type: 'SET_AUTHENTICATED', payload: auth }),
     clearHistory: () => dispatch({ type: 'CLEAR_HISTORY' }),
+    setApiKey: (key) => dispatch({ type: 'SET_API_KEY', payload: key }),
   };
 
   return (

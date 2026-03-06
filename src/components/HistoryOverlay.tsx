@@ -10,6 +10,7 @@ import {
   Animated,
 } from 'react-native';
 import { useCleppy } from '../context/CleppyContext';
+import { useTheme } from '../context/ThemeContext';
 import { useKeyboardShortcut } from '../hooks/useKeyboardShortcut';
 import ClipboardCard from './ClipboardCard';
 import { ClipboardEntry } from '../types';
@@ -20,6 +21,7 @@ interface HistoryOverlayProps {
 
 export default function HistoryOverlay({ onPaste }: HistoryOverlayProps) {
   const { state, setHistoryOverlay } = useCleppy();
+  const { colors } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const searchInputRef = useRef<TextInput>(null);
@@ -101,7 +103,7 @@ export default function HistoryOverlay({ onPaste }: HistoryOverlayProps) {
       transparent
     >
       <TouchableOpacity
-        style={styles.backdrop}
+        style={[styles.backdrop, { backgroundColor: colors.overlay }]}
         activeOpacity={1}
         onPress={() => setHistoryOverlay(false)}
       >
@@ -109,6 +111,9 @@ export default function HistoryOverlay({ onPaste }: HistoryOverlayProps) {
           style={[
             styles.container,
             {
+              backgroundColor: colors.background,
+              borderColor: colors.accent,
+              shadowColor: colors.accent,
               transform: [
                 {
                   translateY: slideAnim.interpolate({
@@ -122,19 +127,35 @@ export default function HistoryOverlay({ onPaste }: HistoryOverlayProps) {
           ]}
         >
           <TouchableOpacity activeOpacity={1}>
-            <View style={styles.header}>
-              <Text style={styles.title}>📋 クリップボード履歴</Text>
-              <Text style={styles.shortcut}>⌘⇧V</Text>
+            <View style={[styles.header, { borderBottomColor: colors.border }]}>
+              <Text style={[styles.title, { color: colors.text }]}>
+                📋 クリップボード履歴
+              </Text>
+              <Text
+                style={[
+                  styles.shortcut,
+                  { color: colors.textMuted, backgroundColor: colors.border },
+                ]}
+              >
+                ⌘⇧V
+              </Text>
             </View>
 
             <View style={styles.searchContainer}>
               <TextInput
                 ref={searchInputRef}
-                style={styles.searchInput}
+                style={[
+                  styles.searchInput,
+                  {
+                    backgroundColor: colors.surface,
+                    color: colors.text,
+                    borderColor: colors.border,
+                  },
+                ]}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 placeholder="検索..."
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.textMuted}
                 autoFocus
               />
             </View>
@@ -152,7 +173,7 @@ export default function HistoryOverlay({ onPaste }: HistoryOverlayProps) {
               style={styles.list}
               ListEmptyComponent={
                 <View style={styles.emptyState}>
-                  <Text style={styles.emptyText}>
+                  <Text style={[styles.emptyText, { color: colors.textMuted }]}>
                     {searchQuery
                       ? '該当する履歴がありません'
                       : 'クリップボード履歴がありません'}
@@ -161,8 +182,8 @@ export default function HistoryOverlay({ onPaste }: HistoryOverlayProps) {
               }
             />
 
-            <View style={styles.footer}>
-              <Text style={styles.hint}>
+            <View style={[styles.footer, { borderTopColor: colors.border }]}>
+              <Text style={[styles.hint, { color: colors.textMuted }]}>
                 ↑↓ 選択 · Enter 貼り付け · Esc 閉じる
               </Text>
             </View>
@@ -176,19 +197,15 @@ export default function HistoryOverlay({ onPaste }: HistoryOverlayProps) {
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   container: {
-    backgroundColor: '#1a1a2e',
     borderRadius: 16,
     width: '90%',
     maxWidth: 500,
     maxHeight: '70%',
     borderWidth: 1,
-    borderColor: '#e94560',
-    shadowColor: '#e94560',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 20,
@@ -200,17 +217,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#0f3460',
   },
   title: {
-    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
   shortcut: {
-    color: '#888',
     fontSize: 12,
-    backgroundColor: '#0f3460',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
@@ -220,14 +233,11 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   searchInput: {
-    backgroundColor: '#16213e',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    color: '#fff',
     fontSize: 14,
     borderWidth: 1,
-    borderColor: '#0f3460',
   },
   list: {
     maxHeight: 350,
@@ -237,17 +247,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    color: '#666',
     fontSize: 14,
   },
   footer: {
     padding: 12,
     borderTopWidth: 1,
-    borderTopColor: '#0f3460',
     alignItems: 'center',
   },
   hint: {
-    color: '#666',
     fontSize: 12,
   },
 });

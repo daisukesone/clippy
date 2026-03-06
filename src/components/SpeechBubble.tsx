@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
 interface SpeechBubbleProps {
   message: string;
@@ -12,6 +13,7 @@ export default function SpeechBubble({
   visible,
   position = 'top',
 }: SpeechBubbleProps) {
+  const { colors } = useTheme();
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -32,13 +34,22 @@ export default function SpeechBubble({
         { opacity },
       ]}
     >
-      <View style={styles.bubble}>
-        <Text style={styles.text}>{message}</Text>
+      <View
+        style={[
+          styles.bubble,
+          { backgroundColor: colors.surface, borderColor: colors.accent },
+        ]}
+      >
+        <Text style={[styles.text, { color: colors.textSecondary }]}>
+          {message}
+        </Text>
       </View>
       <View
         style={[
           styles.arrow,
-          position === 'bottom' ? styles.arrowTop : styles.arrowBottom,
+          position === 'bottom'
+            ? [styles.arrowTop, { borderBottomColor: colors.accent }]
+            : [styles.arrowBottom, { borderTopColor: colors.accent }],
         ]}
       />
     </Animated.View>
@@ -55,16 +66,13 @@ const styles = StyleSheet.create({
     top: 70,
   },
   bubble: {
-    backgroundColor: '#16213e',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 10,
     maxWidth: 250,
     borderWidth: 1,
-    borderColor: '#e94560',
   },
   text: {
-    color: '#eee',
     fontSize: 14,
     lineHeight: 20,
   },
@@ -78,10 +86,8 @@ const styles = StyleSheet.create({
   },
   arrowBottom: {
     borderTopWidth: 8,
-    borderTopColor: '#e94560',
   },
   arrowTop: {
     borderBottomWidth: 8,
-    borderBottomColor: '#e94560',
   },
 });

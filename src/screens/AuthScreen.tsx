@@ -8,6 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import { useCleppy } from '../context/CleppyContext';
+import { useTheme } from '../context/ThemeContext';
 
 interface AuthScreenProps {
   navigation: { goBack: () => void };
@@ -15,6 +16,7 @@ interface AuthScreenProps {
 
 export default function AuthScreen({ navigation }: AuthScreenProps) {
   const { setAuthenticated } = useCleppy();
+  const { colors } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
@@ -40,36 +42,54 @@ export default function AuthScreen({ navigation }: AuthScreenProps) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.logoContainer}>
         <Text style={styles.logo}>📎</Text>
-        <Text style={styles.title}>Cleppy</Text>
-        <Text style={styles.subtitle}>
+        <Text style={[styles.title, { color: colors.accent }]}>Cleppy</Text>
+        <Text style={[styles.subtitle, { color: colors.textMuted }]}>
           {isLogin ? 'おかえりなさい！' : 'はじめまして！'}
         </Text>
       </View>
 
       <View style={styles.form}>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            {
+              backgroundColor: colors.surface,
+              color: colors.text,
+              borderColor: colors.border,
+            },
+          ]}
           value={email}
           onChangeText={setEmail}
           placeholder="メールアドレス"
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           keyboardType="email-address"
           autoCapitalize="none"
         />
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            {
+              backgroundColor: colors.surface,
+              color: colors.text,
+              borderColor: colors.border,
+            },
+          ]}
           value={password}
           onChangeText={setPassword}
           placeholder="パスワード"
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           secureTextEntry
         />
 
         <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
+          style={[
+            styles.button,
+            { backgroundColor: colors.accent },
+            loading && styles.buttonDisabled,
+          ]}
           onPress={handleAuth}
           disabled={loading}
         >
@@ -82,7 +102,7 @@ export default function AuthScreen({ navigation }: AuthScreenProps) {
           style={styles.switchButton}
           onPress={() => setIsLogin(!isLogin)}
         >
-          <Text style={styles.switchText}>
+          <Text style={[styles.switchText, { color: colors.accent }]}>
             {isLogin
               ? 'アカウントを作成する'
               : 'すでにアカウントをお持ちの方'}
@@ -96,7 +116,6 @@ export default function AuthScreen({ navigation }: AuthScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a0a1a',
     justifyContent: 'center',
     paddingHorizontal: 32,
   },
@@ -109,12 +128,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    color: '#e94560',
     fontSize: 32,
     fontWeight: 'bold',
   },
   subtitle: {
-    color: '#888',
     fontSize: 16,
     marginTop: 8,
   },
@@ -122,17 +139,13 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   input: {
-    backgroundColor: '#16213e',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    color: '#fff',
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#0f3460',
   },
   button: {
-    backgroundColor: '#e94560',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -151,7 +164,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   switchText: {
-    color: '#e94560',
     fontSize: 14,
   },
 });

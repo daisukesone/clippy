@@ -35,4 +35,5 @@ export interface CleppyState {
   settings: UserSettings;
   isHistoryOverlayVisible: boolean;
   isAuthenticated: boolean;
+  apiKey: string | null;
 }

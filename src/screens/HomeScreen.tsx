@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { useCleppy } from '../context/CleppyContext';
+import { useTheme } from '../context/ThemeContext';
 import { useClipboardHistory } from '../hooks/useClipboardHistory';
 import { useKeyboardShortcut } from '../hooks/useKeyboardShortcut';
 import CleppyCharacter from '../components/CleppyCharacter';
@@ -22,6 +23,7 @@ interface HomeScreenProps {
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
   const { state, togglePin, removeClipboardEntry, clearHistory } = useCleppy();
+  const { colors } = useTheme();
   const { history } = useClipboardHistory();
   const [chatVisible, setChatVisible] = useState(false);
   const [showBubble, setShowBubble] = useState(true);
@@ -38,21 +40,27 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerBar}>
-        <Text style={styles.headerTitle}>📎 Cleppy</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.headerBar, { borderBottomColor: colors.border }]}>
+        <Text style={[styles.headerTitle, { color: colors.accent }]}>
+          📎 Cleppy
+        </Text>
         <View style={styles.headerActions}>
           <TouchableOpacity
             onPress={clearHistory}
-            style={styles.headerButton}
+            style={[styles.headerButton, { backgroundColor: colors.surface }]}
           >
-            <Text style={styles.headerButtonText}>履歴クリア</Text>
+            <Text style={[styles.headerButtonText, { color: colors.textMuted }]}>
+              履歴クリア
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('Settings')}
-            style={styles.headerButton}
+            style={[styles.headerButton, { backgroundColor: colors.surface }]}
           >
-            <Text style={styles.headerButtonText}>⚙️</Text>
+            <Text style={[styles.headerButtonText, { color: colors.textMuted }]}>
+              ⚙️
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -73,11 +81,18 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         ListEmptyComponent={
           <View style={styles.emptyState}>
             <Text style={styles.emptyEmoji}>📋</Text>
-            <Text style={styles.emptyTitle}>クリップボード履歴がありません</Text>
-            <Text style={styles.emptySubtitle}>
+            <Text style={[styles.emptyTitle, { color: colors.text }]}>
+              クリップボード履歴がありません
+            </Text>
+            <Text style={[styles.emptySubtitle, { color: colors.textMuted }]}>
               テキストをコピーすると、ここに表示されます
             </Text>
-            <Text style={styles.emptyHint}>
+            <Text
+              style={[
+                styles.emptyHint,
+                { color: colors.accent, backgroundColor: colors.surface },
+              ]}
+            >
               ⌘⇧V でいつでも履歴を呼び出せます
             </Text>
           </View>
@@ -102,7 +117,6 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a0a1a',
   },
   headerBar: {
     flexDirection: 'row',
@@ -111,10 +125,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#0f3460',
   },
   headerTitle: {
-    color: '#e94560',
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -126,10 +138,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: '#16213e',
   },
   headerButtonText: {
-    color: '#aaa',
     fontSize: 14,
   },
   list: {
@@ -148,21 +158,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   emptyTitle: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
   },
   emptySubtitle: {
-    color: '#888',
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 16,
   },
   emptyHint: {
-    color: '#e94560',
     fontSize: 13,
-    backgroundColor: '#16213e',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
