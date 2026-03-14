@@ -2,7 +2,7 @@ import { ClipboardEntry, ChatMessage } from '../types';
 
 const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
 
-let apiKey: string | null = null;
+let apiKey: string | null = process.env.EXPO_PUBLIC_CLAUDE_API_KEY ?? null;
 
 export function setApiKey(key: string) {
   apiKey = key;
